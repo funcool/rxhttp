@@ -5,7 +5,9 @@
   :source-paths ["src"]
   :dependencies [[org.clojure/clojure "1.8.0" :scope "provided"]
                  [org.clojure/clojurescript "1.9.946" :scope "provided"]
+                 [clj-http "3.7.0"]
                  [funcool/beicon "4.1.0"]]
   :profiles
   {:dev
-   {:plugins [[lein-ancient "0.6.10"]]}})
+   {:dependencies [[cheshire "5.7.1"]]
+    :plugins [[lein-ancient "0.6.10"]]}})

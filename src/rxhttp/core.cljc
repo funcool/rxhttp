@@ -61,3 +61,19 @@
    (send! request nil))
   ([request options]
    (impl/send! request options)))
+
+#?(:clj
+   (defn send!!
+     "A synchronous version of `send!` function."
+     [& args]
+     (let [result (volatile! nil)
+           latch (java.util.concurrent.CountDownLatch. 1)]
+       (-> (apply send! args)
+           (rx/subscribe #(vreset! result %)
+                         #(do (vreset! result %)
+                              (.countDown latch))
+                         #(.countDown latch)))
+       (.await latch)
+       (if (instance? Throwable @result)
+         (throw @result)
+         @result))))

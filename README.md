@@ -2,10 +2,12 @@
 
 [![Clojars Project](http://clojars.org/funcool/rxhttp/latest-version.svg)](http://clojars.org/funcool/rxhttp)
 
+
 ## Introduction
 
-A stream based http client for ClojureScript that works in browser and nodejs
-and uses [beicon][1] as reactive streams abstraction.
+A stream based http client for Clojure and ClojureScript that works in
+browser, nodejs and JVM; and uses [beicon][1] as reactive streams
+abstraction.
 
 [1]: https://github.com/funcool/beicon
 
@@ -24,7 +26,8 @@ Add the following dependency into your `project.clj` file:
 This library just consists in one public namespace with one public method:
 
 ```clojure
-(require '[rxhttp.core :as http])
+(require '[rxhttp.core :as http]
+         '[beicon.core :as rx])
 
 (-> (http/send! {:method :get :url "https://httpbin.org/get"})
     (rx/subscribe (fn [{:keys [status headers body] :as response}]
@@ -33,6 +36,9 @@ This library just consists in one public namespace with one public method:
 
 That's it, nothing more. You can see all available options in the
 `send!` function docstring.
+
+On JVM platform you also have a `send!!` function, that is a synchronous
+variant of `send!`.
 
 
 ## How to contribute?
@@ -57,15 +63,8 @@ all platforms..
 
 - Is this library a replacement for [httpurr][2]?
 
-Yes and no. For now, if you are using ClojureScript, I recommend using
-this library over httpurr. But at this moment this library does not
-implement support for clojure, so if you are using clojure, probably
-httpurr is a solution at this moment. There is also [clj-http][3].
-
-An implementation for clojure will be done in some future.
-
-[2]: https://github.com/funcool/httpurr
-[3]: https://github.com/dakrone/clj-http
+Yes. Reactive-Streams provide a better abstraction for represent an
+asynchronous result; they are cancellable and lazy.
 
 
 ## License
