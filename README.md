@@ -66,6 +66,8 @@ all platforms..
 Yes. Reactive-Streams provide a better abstraction for represent an
 asynchronous result; they are cancellable and lazy.
 
+[2]: https://github.com/funcool/httpurr
+
 
 ## License
 

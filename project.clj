@@ -1,5 +1,5 @@
-(defproject funcool/rxhttp "1.0.0"
-  :description "A stream based http client for ClojureScript"
+(defproject funcool/rxhttp "1.0.0-SNAPSHOT"
+  :description "A stream based http client for Clojure and ClojureScript"
   :url "http://funcool.github.io/rxhttp"
   :license {:name "MPL 2.0" :url "https://www.mozilla.org/en-US/MPL/2.0/"}
   :source-paths ["src"]
@@ -9,5 +9,5 @@
                  [funcool/beicon "4.1.0"]]
   :profiles
   {:dev
-   {:dependencies [[cheshire "5.7.1"]]
+   {:dependencies [[cheshire "5.8.0"]]
     :plugins [[lein-ancient "0.6.10"]]}})
