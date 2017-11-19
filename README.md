@@ -1,6 +1,6 @@
 # rxhttp
 
-[![Clojars Project](http://clojars.org/funcool/lentes/latest-version.svg)](http://clojars.org/funcool/rxhttp)
+[![Clojars Project](http://clojars.org/funcool/rxhttp/latest-version.svg)](http://clojars.org/funcool/rxhttp)
 
 ## Introduction
 
