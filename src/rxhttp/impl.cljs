@@ -18,13 +18,13 @@
 (def ^:dynamic *xhr-impl* XhrIo)
 
 ;; Import all node stuff if the build is for nodejs
-(when (= *target* "nodejs")
-  (def ^:private node-http (node/require "http"))
-  (def ^:private node-https (node/require "https"))
-  (def ^:private node-url (node/require "url"))
-  (def ^:private node-qs (node/require "querystring"))
-  ;; Try import form-data for file uploads support in nodejs
-  #_(def ^:private node-formdata (node/require "form-data")))
+;; (when (= *target* "nodejs")
+;;   (def ^:private node-http (node/require "http"))
+;;   (def ^:private node-https (node/require "https"))
+;;   (def ^:private node-url (node/require "url"))
+;;   (def ^:private node-qs (node/require "querystring"))
+;;   ;; Try import form-data for file uploads support in nodejs
+;;   #_(def ^:private node-formdata (node/require "form-data")))
 
 (defn- translate-method
   "Translates the keyword method name to internal http method naming."
