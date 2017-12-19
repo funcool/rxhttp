@@ -6,8 +6,7 @@
 
 (ns rxhttp.impl
   "A streams based http client for clojurescript (browser and node)."
-  (:require [cljs.nodejs :as node]
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
             [beicon.core :as rx]
             [goog.events :as events])
   (:import [goog.net ErrorCode EventType]
@@ -112,52 +111,50 @@
                               (sink (ex-info message {:type type}))))))
          #(.abort xhr))))))
 
-(defn fetch-node
-  [{:keys [method url query-string query-params headers body]
-    :or {headers {} method :get}
-    :as request}
-   {:keys [timeout response-type]
-    :or {timeout 0  response-type :text}}]
-  (let [headers (merge headers
-                       (when (= method :post) {:content-length (count body)}))
-        urlopts (merge (build-uri-opts url query-string query-params)
-                       {:headers (clj->js headers)
-                        :method (translate-method method)})
-        nodemod (if (= "https:" (:protocol urlopts)) node-https node-http)]
-    (rx/create
-     (fn [sink]
-       (letfn [(listen [target event callback]
-                 (.on target event callback)
-                 target)
-               (build-response [rsp body]
-                 (let [headers (apply js-obj (.-rawHeaders rsp))]
-                   {:status (.-statusCode rsp)
-                    :body body
-                    :headers (normalize-headers headers)}))
-               (on-response [rsp]
-                 (let [chunks (array)]
-                   (listen rsp "readable" #(some->> (.read rsp) (.push chunks)))
-                   (listen rsp "end" (fn []
-                                       (let [body (cond-> (.concat js/Buffer chunks)
-                                                    (= response-type :text) (.toString "utf8"))]
-                                         (sink (rx/end (build-response rsp body))))))))
-               (on-timeout []
-                 (sink (ex-info "Request timeout" {:type type})))
-               (on-error [err]
-                 (sink err))]
-         (let [req (.request nodemod (clj->js urlopts))]
-           (listen req "response" on-response)
-           (listen req "timeout" on-timeout)
-           (listen req "clientError" on-error)
-           (listen req "error" on-error)
-           (.setTimeout req timeout)
-           (when body
-             (.write req body))
-           (.end req)
-           #(.abort req)))))))
+;; (defn fetch-node
+;;   [{:keys [method url query-string query-params headers body]
+;;     :or {headers {} method :get}
+;;     :as request}
+;;    {:keys [timeout response-type]
+;;     :or {timeout 0  response-type :text}}]
+;;   (let [headers (merge headers
+;;                        (when (= method :post) {:content-length (count body)}))
+;;         urlopts (merge (build-uri-opts url query-string query-params)
+;;                        {:headers (clj->js headers)
+;;                         :method (translate-method method)})
+;;         nodemod (if (= "https:" (:protocol urlopts)) node-https node-http)]
+;;     (rx/create
+;;      (fn [sink]
+;;        (letfn [(listen [target event callback]
+;;                  (.on target event callback)
+;;                  target)
+;;                (build-response [rsp body]
+;;                  (let [headers (apply js-obj (.-rawHeaders rsp))]
+;;                    {:status (.-statusCode rsp)
+;;                     :body body
+;;                     :headers (normalize-headers headers)}))
+;;                (on-response [rsp]
+;;                  (let [chunks (array)]
+;;                    (listen rsp "readable" #(some->> (.read rsp) (.push chunks)))
+;;                    (listen rsp "end" (fn []
+;;                                        (let [body (cond-> (.concat js/Buffer chunks)
+;;                                                     (= response-type :text) (.toString "utf8"))]
+;;                                          (sink (rx/end (build-response rsp body))))))))
+;;                (on-timeout []
+;;                  (sink (ex-info "Request timeout" {:type type})))
+;;                (on-error [err]
+;;                  (sink err))]
+;;          (let [req (.request nodemod (clj->js urlopts))]
+;;            (listen req "response" on-response)
+;;            (listen req "timeout" on-timeout)
+;;            (listen req "clientError" on-error)
+;;            (listen req "error" on-error)
+;;            (.setTimeout req timeout)
+;;            (when body
+;;              (.write req body))
+;;            (.end req)
+;;            #(.abort req)))))))
 
 (defn send!
   [request options]
-  (if (= *target* "nodejs")
-    (fetch-node request options)
-    (fetch-browser request options)))
+  (fetch-browser request options))
