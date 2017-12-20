@@ -1,7 +1,7 @@
 (ns rxhttp.test-nodejs
   (:require [cljs.test :as t]
             [beicon.core :as rx]
-            [rxhttp.core :as http]))
+            [rxhttp.node :as http]))
 
 ;; --- helpers
 

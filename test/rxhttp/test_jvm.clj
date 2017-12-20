@@ -1,7 +1,7 @@
 (ns rxhttp.test-jvm
   (:require [clojure.test :as t]
             [beicon.core :as rx]
-            [rxhttp.core :as http]
+            [rxhttp.jvm :as http]
             [cheshire.core :as json])
   (:import java.util.concurrent.CountDownLatch))
 

@@ -1,14 +1,23 @@
 (ns rxhttp.test-browser
   (:require [cljs.test :as t]
             [beicon.core :as rx]
-            [rxhttp.impl :as impl]
-            [rxhttp.core :as http])
+            [rxhttp.browser :as http])
   (:import goog.testing.net.XhrIo))
 
 ;; --- helpers
 
+;; (def ^:dynamic *last-instance* nil)
+
+;; (def TestXhrIo
+;;   (let [ctor #(this-as this
+;;                 (set! *last-instance* this)
+;;                 (.call XhrIo this))]
+;;     (goog/inherits ctor XhrIo)
+;;     ctor))
+
 (defn get-last-raw-request
   []
+  ;; *last-instance*)
   (aget (.getSendInstances XhrIo) 0))
 
 (defn get-last-request
@@ -35,16 +44,11 @@
 
 (defn after-each
   []
-  (set! *target* "nodejs")
   (.cleanup goog.testing.net.XhrIo))
-
-(defn before-each
-  []
-  (set! *target* "default"))
 
 (defn send!
   [& args]
-  (binding [impl/*xhr-impl* goog.testing.net.XhrIo]
+  (binding [http/*xhr-impl* XhrIo]
     (apply http/send! args)))
 
 (defn drain!
@@ -60,7 +64,7 @@
 
 ;; --- browser mocked tests
 
-(t/use-fixtures :each {:after after-each :before before-each})
+(t/use-fixtures :each {:after after-each})
 
 (t/deftest send-plain-get
   (t/async done
